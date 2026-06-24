@@ -291,3 +291,59 @@ code {
     padding: 20px;
   }
 }
+.review-actions {
+  display: grid;
+  grid-template-columns: 1fr repeat(3, auto);
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.review-actions span {
+  display: block;
+  color: #94a3b8;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.review-actions strong {
+  text-transform: uppercase;
+}
+
+.approve-button,
+.reject-button,
+.retry-button {
+  padding: 11px 14px;
+  color: #020617;
+}
+
+.approve-button {
+  background: #22c55e;
+}
+
+.reject-button {
+  background: #f87171;
+}
+
+.retry-button {
+  background: #facc15;
+}
+
+.override-note {
+  margin-bottom: 22px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #cbd5e1;
+}
+
+@media (max-width: 900px) {
+  .review-actions {
+    grid-template-columns: 1fr;
+  }
+}

@@ -153,9 +153,12 @@ def execute_workflow(process_description: str) -> Dict[str, Any]:
     audit_log.append(f"Workflow {workflow_id} finished with status: {final_status}.")
 
     return {
-        "workflow_id": workflow_id,
-        "original_process": process_description,
-        "status": final_status,
-        "steps": steps,
-        "audit_log": audit_log
+         "workflow_id": workflow_id,
+    "original_process": process_description,
+    "status": final_status,
+    "steps": steps,
+    "audit_log": audit_log,
+    "review_status": "pending",
+    "human_override": False,
+    "override_reason": None
     }

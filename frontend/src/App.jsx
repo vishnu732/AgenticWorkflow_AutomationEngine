@@ -86,7 +86,64 @@ function App() {
       setLoading(false);
     }
   };
+  const reviewWorkflow = async (workflowId, reviewStatus) => {
+    const reason =
+      reviewStatus === "approved"
+        ? "Human reviewer approved the workflow execution."
+        : "Human reviewer rejected the workflow execution.";
 
+    try {
+      setError("");
+
+      const response = await fetch(`${API_BASE_URL}/api/workflows/${workflowId}/review`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          review_status: reviewStatus,
+          override_reason: reason
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update workflow review status");
+      }
+
+      const data = await response.json();
+
+      setSelectedWorkflow(data);
+      await fetchWorkflows();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const retryWorkflow = async (workflowId) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch(`${API_BASE_URL}/api/workflows/${workflowId}/retry`, {
+        method: "POST"
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to retry workflow");
+      }
+
+      const data = await response.json();
+
+      setLatestResult(data);
+      setSelectedWorkflow(data);
+
+      await fetchWorkflows();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchWorkflows();
   }, []);
@@ -185,6 +242,40 @@ function App() {
                   <span>Status</span>
                   <strong>{activeWorkflow.status}</strong>
                 </div>
+                              <div className="review-actions">
+                <div>
+                  <span>Review Status</span>
+                  <strong>{activeWorkflow.review_status || "pending"}</strong>
+                </div>
+
+                <button
+                  className="approve-button"
+                  onClick={() => reviewWorkflow(activeWorkflow.workflow_id, "approved")}
+                >
+                  Approve Workflow
+                </button>
+
+                <button
+                  className="reject-button"
+                  onClick={() => reviewWorkflow(activeWorkflow.workflow_id, "rejected")}
+                >
+                  Reject Workflow
+                </button>
+
+                <button
+                  className="retry-button"
+                  onClick={() => retryWorkflow(activeWorkflow.workflow_id)}
+                  disabled={loading}
+                >
+                  Retry Workflow
+                </button>
+              </div>
+
+              {activeWorkflow.override_reason && (
+                <div className="override-note">
+                  <strong>Override Reason:</strong> {activeWorkflow.override_reason}
+                </div>
+              )}
                 <div>
                   <span>Workflow ID</span>
                   <strong className="small-text">{activeWorkflow.workflow_id}</strong>
